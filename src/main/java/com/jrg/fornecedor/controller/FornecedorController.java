@@ -34,6 +34,7 @@ public class FornecedorController {
         }
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public ResponseEntity<?> saveFornecedor(@RequestBody FornecedorRequestDTO data) {
         try {

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import com.jrg.fornecedor.ErrorResponse;
 
 @RestController
 @RequestMapping("fornecedor")
@@ -32,17 +34,24 @@ public class FornecedorController {
         }
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
-    public ResponseEntity<Fornecedor> saveFornecedor(@RequestBody FornecedorRequestDTO data) {
+    public ResponseEntity<?> saveFornecedor(@RequestBody FornecedorRequestDTO data) {
         try {
+            Optional<Fornecedor> existingFornecedor = repository.findByCnpj(data.cnpj());
+            if (existingFornecedor.isPresent()) {
+                ErrorResponse errorResponse = new ErrorResponse("CNPJ já cadastrado!");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            }
+
             Fornecedor fornecedor = new Fornecedor(data);
             repository.save(fornecedor);
-            return new ResponseEntity<>(fornecedor, HttpStatus.CREATED);
+            FornecedorResponseDTO responseDTO = new FornecedorResponseDTO(fornecedor);
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
@@ -73,9 +82,16 @@ public class FornecedorController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping("/{id}")
-    public ResponseEntity<FornecedorResponseDTO> updateFornecedor(@PathVariable Long id, @RequestBody FornecedorRequestDTO data) {
+    public ResponseEntity<?> updateFornecedor(@PathVariable Long id, @RequestBody FornecedorRequestDTO data) {
         try {
             Fornecedor fornecedor = repository.findById(id).orElseThrow(NoSuchElementException::new);
+
+            Optional<Fornecedor> existingFornecedor = repository.findByCnpj(data.cnpj());
+            if (existingFornecedor.isPresent() && !existingFornecedor.get().getId().equals(id)) {
+                ErrorResponse errorResponse = new ErrorResponse("CNPJ já cadastrado!");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            }
+
             fornecedor.setNome(data.nome());
             fornecedor.setCnpj(data.cnpj());
             fornecedor.setEndereco(data.endereco());

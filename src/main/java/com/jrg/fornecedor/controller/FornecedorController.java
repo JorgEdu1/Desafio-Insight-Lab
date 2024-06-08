@@ -32,6 +32,7 @@ public class FornecedorController {
         }
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public ResponseEntity<Fornecedor> saveFornecedor(@RequestBody FornecedorRequestDTO data) {
         try {
@@ -43,6 +44,7 @@ public class FornecedorController {
         }
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
     public ResponseEntity<FornecedorResponseDTO> getFornecedor(@PathVariable Long id) {
         try {
@@ -56,6 +58,7 @@ public class FornecedorController {
         }
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFornecedor(@PathVariable Long id) {
         try {
@@ -68,6 +71,7 @@ public class FornecedorController {
         }
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping("/{id}")
     public ResponseEntity<FornecedorResponseDTO> updateFornecedor(@PathVariable Long id, @RequestBody FornecedorRequestDTO data) {
         try {

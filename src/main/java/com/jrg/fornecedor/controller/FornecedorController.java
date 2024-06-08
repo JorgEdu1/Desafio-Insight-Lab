@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,7 +24,7 @@ public class FornecedorController {
     @GetMapping
     public ResponseEntity<List<FornecedorResponseDTO>> getAll() {
         try {
-            List<FornecedorResponseDTO> fornecedorList = repository.findAll().stream()
+            List<FornecedorResponseDTO> fornecedorList = repository.findAllByOrderByIdDesc().stream()
                     .map(FornecedorResponseDTO::new)
                     .toList();
             return new ResponseEntity<>(fornecedorList, HttpStatus.OK);

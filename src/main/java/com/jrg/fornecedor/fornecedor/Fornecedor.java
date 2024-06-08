@@ -3,6 +3,8 @@
     import jakarta.persistence.*;
     import lombok.*;
 
+    import java.time.LocalDateTime;
+
     @Table(name = "fornecedor")
     @Entity(name = "fornecedor")
     @Getter
@@ -21,6 +23,10 @@
         private String telefone;
         private String email;
         private String contatoPrincipal;
+        @Column(name= "created_at")
+        private LocalDateTime createdAt;
+        @Column(name= "updatedAt")
+        private LocalDateTime updatedAt;
 
         public Fornecedor(FornecedorRequestDTO data) {
             this.nome = data.nome();

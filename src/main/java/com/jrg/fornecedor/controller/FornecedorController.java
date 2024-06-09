@@ -69,12 +69,18 @@ public class FornecedorController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFornecedor(@PathVariable Long id) {
+    public ResponseEntity<FornecedorResponseDTO> deleteFornecedor(@PathVariable Long id) {
         try {
-            repository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Optional<Fornecedor> fornecedorOptional = repository.findById(id);
+
+            if (fornecedorOptional.isPresent()) {
+                Fornecedor fornecedor = fornecedorOptional.get();
+                repository.deleteById(id);
+                FornecedorResponseDTO responseDTO = new FornecedorResponseDTO(fornecedor);
+                return new ResponseEntity<>(responseDTO, HttpStatus.NO_CONTENT); // Retornar o registro deletado
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
